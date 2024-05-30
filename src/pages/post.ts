@@ -1,9 +1,16 @@
 class Post {
 	$container;
 
-	constructor($container: HTMLElement) {
+	constructor(
+		$container: HTMLElement,
+		params?: Record<string, string>,
+		query?: Record<string, string>,
+	) {
 		this.$container = $container;
 		this.render();
+
+		console.log(params);
+		console.log(query);
 	}
 
 	setState() {

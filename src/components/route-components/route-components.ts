@@ -1,13 +1,20 @@
 import Home from '@pages/home.ts';
 import Post from '@pages/post.ts';
 import Shop from '@pages/shop.ts';
+import Login from '@/pages/login.ts';
 import type { Route } from '@/global.d.ts';
 
 const routes: Route[] = [
 	{ path: '/', component: Home },
-	{ path: '/post/123', component: Post },
-	{ path: '/shop', component: Shop },
+	{ path: '/post/:postId', component: Post },
+	{ path: '/shop', component: Shop, guard: isAuthenticated },
+	{ path: '/login', component: Login },
 ];
+
+function isAuthenticated(): boolean {
+	// 여기에 실제 인증 로직을 추가하세요
+	return !!localStorage.getItem('authToken');
+}
 
 class Router {
 	private routes: Route[];
@@ -20,22 +27,66 @@ class Router {
 	}
 
 	private init() {
-		window.addEventListener('popstate', () => {
-			this.handleLocationChange();
-		});
-
+		window.addEventListener('popstate', () => this.handleLocationChange());
 		this.handleLocationChange();
 	}
 
-	private handleLocationChange() {
+	private handleLocationChange = () => {
 		const path = window.location.pathname;
-		const route = this.routes.find((route) => route.path === path);
+		const query = this.parseQuery(window.location.search);
+		const matchedRoute = this.matchRoute(path);
 
-		if (route) {
-			new route.component(this.container);
-		} else {
-			this.renderNotFound();
+		if (!matchedRoute) return this.renderNotFound();
+
+		const { route, params } = matchedRoute;
+
+		if (route.guard && !route.guard()) return this.navigate('/login');
+
+		new route.component(this.container, params, query);
+	};
+
+	// URL 쿼리 문자열을 파싱하는 메소드
+	private parseQuery(queryString: string): Record<string, string> {
+		const query: Record<string, string> = {};
+		const queryParts = queryString.startsWith('?') ? queryString.substring(1).split('&') : [];
+
+		for (const part of queryParts) {
+			const [key, value] = part.split('=');
+			query[decodeURIComponent(key)] = decodeURIComponent(value || '');
 		}
+
+		return query;
+	}
+
+	private matchRoute(path: string) {
+		for (const route of this.routes) {
+			const { isMatch, params } = this.matchPath(route.path, path);
+
+			if (isMatch) return { route, params };
+		}
+
+		return null;
+	}
+
+	private matchPath(
+		routePath: string,
+		actualPath: string,
+	): { isMatch: boolean; params: Record<string, string> } {
+		const params: Record<string, string> = {};
+		const routeParts = routePath.split('/');
+		const actualParts = actualPath.split('/');
+
+		if (routeParts.length !== actualParts.length) return { isMatch: false, params };
+
+		for (let i = 0; i < routeParts.length; i++) {
+			if (routeParts[i].startsWith(':')) {
+				params[routeParts[i].substring(1)] = actualParts[i];
+			} else if (routeParts[i] !== actualParts[i]) {
+				return { isMatch: false, params };
+			}
+		}
+
+		return { isMatch: true, params };
 	}
 
 	private renderNotFound() {

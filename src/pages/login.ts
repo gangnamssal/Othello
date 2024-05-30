@@ -1,9 +1,10 @@
-class Home {
+class Login {
 	$container;
 
 	constructor($container: HTMLElement, params?: Record<string, string>) {
 		this.$container = $container;
 		this.render();
+
 		console.log(params);
 	}
 
@@ -14,10 +15,10 @@ class Home {
 	render() {
 		this.$container.innerHTML = `
         <main class="mainPage">
-          메인 페이지에요.
+          login 페이지에요.
         </main>
       `;
 	}
 }
 
-export default Home;
+export default Login;
