@@ -1,5 +1,7 @@
 class Post {
-	$container;
+	private $container: HTMLElement;
+	#params?: Record<string, string>;
+	#query?: Record<string, string>;
 
 	constructor(
 		$container: HTMLElement,
@@ -7,22 +9,23 @@ class Post {
 		query?: Record<string, string>,
 	) {
 		this.$container = $container;
-		this.render();
-
-		console.log(params);
-		console.log(query);
-	}
-
-	setState() {
+		this.#params = params;
+		this.#query = query;
 		this.render();
 	}
 
-	render() {
+	setState(params?: Record<string, string>, query?: Record<string, string>) {
+		this.#params = params;
+		this.#query = query;
+		this.render();
+	}
+
+	private render() {
 		this.$container.innerHTML = `
-        <main class="mainPage">
-          Post 페이지에요.
-        </main>
-      `;
+		<main class="mainPage">
+			<p>Post Page</p>
+		</main>
+	  `;
 	}
 }
 
