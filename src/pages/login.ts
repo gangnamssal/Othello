@@ -1,24 +1,24 @@
 class Login {
-	$container;
+  $container;
 
-	constructor($container: HTMLElement, params?: Record<string, string>) {
-		this.$container = $container;
-		this.render();
+  constructor($container: HTMLElement, params?: Record<string, string>) {
+    this.$container = $container;
+    this.render();
 
-		console.log(params);
-	}
+    console.log(params);
+  }
 
-	setState() {
-		this.render();
-	}
+  setState() {
+    this.render();
+  }
 
-	render() {
-		this.$container.innerHTML = `
+  render() {
+    this.$container.innerHTML = `
         <main class="mainPage">
           login 페이지에요.
         </main>
       `;
-	}
+  }
 }
 
 export default Login;

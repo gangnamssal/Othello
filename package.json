@@ -9,8 +9,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "format": "prettier --cache --write .",
-    "lint": "pnpm eslint --cache ."
+    "format": "prettier --cache --write ."
   },
   "devDependencies": {
     "eslint-config-prettier": "^9.1.0",
