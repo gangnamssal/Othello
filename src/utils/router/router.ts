@@ -1,26 +1,10 @@
 // pages
 import Home from '@pages/home.ts';
-import Post from '@pages/post.ts';
-import Shop from '@pages/shop.ts';
-import Login from '@/pages/login.ts';
 
 // global
 import type { Route } from '@global/global.d.ts';
 
-// components
-import { RouteComponents } from '@components/route-components/route-components.ts';
-
-const routes: Route[] = [
-	{ path: '/', component: Home },
-	{ path: '/post/:postId', component: Post },
-	{ path: '/shop', component: Shop, guard: isAuthenticated },
-	{ path: '/login', component: Login },
-];
-
-function isAuthenticated(): boolean {
-	// 여기에 실제 인증 로직을 추가하세요
-	return !!localStorage.getItem('authToken');
-}
+const routes: Route[] = [{ path: '/', component: Home }];
 
 class Router {
 	private routes: Route[];
@@ -110,11 +94,7 @@ document.addEventListener('DOMContentLoaded', initApp);
 function initApp() {
 	const container = document.getElementById('app');
 
-	if (container) {
-		const router = new Router(container, routes);
-
-		RouteComponents.router = router;
-	}
+	if (container) new Router(container, routes);
 }
 
 export default Router;
