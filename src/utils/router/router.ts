@@ -1,10 +1,14 @@
 // pages
 import Home from '@pages/home/home.ts';
+import Board from '@pages/board/board.ts';
 
 // global
 import type { Route } from '@global/global.d.ts';
 
-const routes: Route[] = [{ path: '/', component: Home }];
+const routes: Route[] = [
+  { path: '/', component: Home },
+  { path: '/board/:mod', component: Board },
+];
 
 class Router {
   private routes: Route[];
