@@ -76,7 +76,7 @@ class Home {
                 : item.color === 'white'
                   ? `<div class=${styles.whiteStone} data-row=${item.location[0]} data-col=${item.location[1]}></div>`
                   : item.hint
-                    ? `<div class=${styles.hint}></div>`
+                    ? `<div class=${`${styles.hint} ${this.#turn === 'black' ? styles.blackHover : styles.whiteHover}`} data-row=${item.location[0]} data-col=${item.location[1]}></div>`
                     : `<div></div>`
             }
           </div>`,
@@ -102,7 +102,7 @@ class Home {
     } else if (item.color === 'white') {
       content = `<div class=${styles.whiteStone} data-row=${item.location[0]} data-col=${item.location[1]}></div>`;
     } else if (item.hint) {
-      content = `<div class=${styles.hint}></div>`;
+      content = `<div class="${`${styles.hint} ${this.#turn === 'black' ? styles.blackHover : styles.whiteHover}`}" data-row=${item.location[0]} data-col=${item.location[1]}></div>`;
     }
 
     cell.innerHTML = content;
@@ -172,7 +172,10 @@ class Home {
       }
     });
 
-    this.updateScore(changeBlack + 1, changeWhite + 1); // Including the placed stone
+    if (this.#turn === 'black') changeBlack++;
+    if (this.#turn === 'white') changeWhite++;
+
+    this.updateScore(changeBlack, changeWhite); // Including the placed stone
   }
 
   // 스코어 업데이트

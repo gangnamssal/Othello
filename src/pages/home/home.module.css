@@ -47,10 +47,6 @@
   background-color: gray; /* 기본 색상 */
 
   cursor: pointer;
-
-  &:hover {
-    opacity: 0.9;
-  }
 }
 
 .oddCell {
@@ -62,8 +58,26 @@
   background-color: lightgray; /* 기본 색상 */
 
   cursor: pointer;
+}
 
+.blackHover {
   &:hover {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: black;
+
+    opacity: 0.9;
+  }
+}
+
+.whiteHover {
+  &:hover {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: white;
+
     opacity: 0.9;
   }
 }
