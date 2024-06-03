@@ -26,17 +26,17 @@ class Board {
   #turn: 'black' | 'white' = 'black';
   #blackScore = 2;
   #whiteScore = 2;
-  #params: { mod: string };
+  #params?: Record<string, string>;
 
-  constructor(container: HTMLElement, params: { mod: 'ai' | 'normal' }) {
+  constructor(container: HTMLElement, params?: Record<string, string>) {
     this.#params = params;
     this.#container = container;
-    this.initRender();
     this.clickBoard();
     this.hint();
     this.updateScores();
+    this.initRender();
 
-    if (this.#params.mod !== 'ai' && this.#params.mod !== 'normal') window.history.go(-1);
+    if (this.#params?.mod !== 'ai' && this.#params?.mod !== 'normal') window.history.go(-1);
   }
 
   // 스코어 업데이트
@@ -53,7 +53,7 @@ class Board {
     const mainHTML = `
       <main class=${styles.main}>
         <div class=${styles.info}>
-          <h1 class=${styles.h1}>${this.#params.mod === 'ai' ? 'AI' : 'Normal'} Mode</h1>
+          <h1 class=${styles.h1}>${this.#params?.mod === 'ai' ? 'AI' : 'Normal'} Mode</h1>
 
           <div class=${styles.score}>
             <div class=${styles.scoreSection}>
@@ -216,7 +216,7 @@ class Board {
 
         this.hint();
 
-        if (this.#turn === 'white' && this.#params.mod === 'ai') {
+        if (this.#turn === 'white' && this.#params?.mod === 'ai') {
           setTimeout(() => {
             this.whiteMove();
           }, 1000);
