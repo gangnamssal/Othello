@@ -36,7 +36,7 @@ class Board {
     this.updateScores();
     this.initRender();
 
-    if (this.#params?.mod !== 'ai' && this.#params?.mod !== 'normal') window.history.go(-1);
+    if (this.#params?.mode !== 'ai' && this.#params?.mode !== 'normal') window.history.go(-1);
   }
 
   // 스코어 업데이트
@@ -53,7 +53,8 @@ class Board {
     const mainHTML = `
       <main class=${styles.main}>
         <div class=${styles.info}>
-          <h1 class=${styles.h1}>${this.#params?.mod === 'ai' ? 'AI' : 'Normal'} Mode</h1>
+          <a class=${styles.h1} href="/">${this.#params?.mode === 'ai' ? 'AI' : 'Normal'} Mode</a>
+
 
           <div class=${styles.score}>
             <div class=${styles.scoreSection}>
@@ -100,9 +101,11 @@ class Board {
   // 셀 업데이트
   private updateCell(row: number, col: number) {
     const cell = this.#container.querySelector(`[data-row='${row}'][data-col='${col}']`);
+
     if (!cell) return;
 
     const item = this.#board[row][col];
+
     let content = '';
 
     if (item.color === 'black') {
@@ -148,6 +151,8 @@ class Board {
 
   // 힌트 표시
   private hint() {
+    let hasValidMove = false;
+
     for (let i = 0; i < ROW; i++) {
       for (let j = 0; j < COL; j++) {
         if (this.#board[i][j].color) {
@@ -157,8 +162,50 @@ class Board {
 
         const flips = this.calculateFlip(i, j);
         this.#board[i][j].hint = flips.length > 0;
+        if (flips.length > 0) hasValidMove = true;
         this.updateCell(i, j);
       }
+    }
+
+    if (!hasValidMove) this.handleNoValidMoves();
+  }
+
+  // 유효한 수가 없을 때 처리
+  private handleNoValidMoves() {
+    this.changeTurn();
+
+    // 다음 차례에서도 놓을 수 있는 곳이 있는지 확인
+    let hasNextTurnMoves = false;
+
+    for (let i = 0; i < ROW; i++) {
+      for (let j = 0; j < COL; j++) {
+        if (!this.#board[i][j].color && this.calculateFlip(i, j).length > 0) {
+          hasNextTurnMoves = true;
+          break;
+        }
+      }
+
+      if (hasNextTurnMoves) break;
+    }
+
+    if (hasNextTurnMoves) {
+      this.hint(); // 다음 차례의 힌트 표시
+    } else {
+      let winner = '';
+
+      if (this.#blackScore > this.#whiteScore) {
+        winner = '흑돌';
+      } else if (this.#whiteScore > this.#blackScore) {
+        winner = '백돌';
+      } else {
+        winner = '무승부';
+      }
+
+      alert(
+        `게임 종료!\n${winner}${winner !== '무승부' ? '의 승리' : ''}입니다.\n흑돌: ${this.#blackScore}, 백돌: ${this.#whiteScore}`,
+      );
+
+      window.history.go(-1);
     }
   }
 
@@ -193,6 +240,11 @@ class Board {
     this.updateScores();
   }
 
+  // 턴 변경
+  private changeTurn() {
+    this.#turn = this.#turn === 'black' ? 'white' : 'black';
+  }
+
   // 클릭 이벤트
   private clickBoard() {
     this.#container.addEventListener('click', (e: MouseEvent) => {
@@ -212,11 +264,11 @@ class Board {
         this.flip(row, col);
 
         // Change turn
-        this.#turn = this.#turn === 'black' ? 'white' : 'black';
+        this.changeTurn();
 
         this.hint();
 
-        if (this.#turn === 'white' && this.#params?.mod === 'ai') {
+        if (this.#turn === 'white' && this.#params?.mode === 'ai') {
           setTimeout(() => {
             this.whiteMove();
           }, 1000);

@@ -7,7 +7,7 @@ import type { Route } from '@global/global.d.ts';
 
 const routes: Route[] = [
   { path: '/', component: Home },
-  { path: '/board/:mod', component: Board },
+  { path: '/board/:mode', component: Board },
 ];
 
 class Router {
